@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		AA12703D268B085700BCB38C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AA12703C268B085700BCB38C /* main.m */; };
 		AA127046268B09FC00BCB38C /* STSKAdNetworkItems.m in Sources */ = {isa = PBXBuildFile; fileRef = AA127045268B09FC00BCB38C /* STSKAdNetworkItems.m */; };
+		AAE0FCC6269C36A60068DF99 /* STProgressBar.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE0FCC5269C36A60068DF99 /* STProgressBar.m */; };
+		AAE35552269D33BD00A29188 /* STNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE35551269D33BD00A29188 /* STNetwork.m */; };
+		AAE3555C269D735A00A29188 /* STTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE3555B269D735A00A29188 /* STTest.m */; };
+		AAE35582269D9F4900A29188 /* STFile.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE35581269D9F4900A29188 /* STFile.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +32,17 @@
 		AA12703C268B085700BCB38C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		AA127044268B09FC00BCB38C /* STSKAdNetworkItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STSKAdNetworkItems.h; sourceTree = "<group>"; };
 		AA127045268B09FC00BCB38C /* STSKAdNetworkItems.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STSKAdNetworkItems.m; sourceTree = "<group>"; };
+		AADD2AF5269EEDE1009BE56E /* STColorDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STColorDefine.h; sourceTree = "<group>"; };
+		AADD2AF9269F0452009BE56E /* STPrintfDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STPrintfDefine.h; sourceTree = "<group>"; };
+		AAE0FCC4269C36A60068DF99 /* STProgressBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STProgressBar.h; sourceTree = "<group>"; };
+		AAE0FCC5269C36A60068DF99 /* STProgressBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = STProgressBar.m; sourceTree = "<group>"; };
+		AAE0FCC7269C4FF40068DF99 /* stskadnetwork-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "stskadnetwork-Bridging-Header.h"; sourceTree = "<group>"; };
+		AAE35550269D33BD00A29188 /* STNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STNetwork.h; sourceTree = "<group>"; };
+		AAE35551269D33BD00A29188 /* STNetwork.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = STNetwork.m; sourceTree = "<group>"; };
+		AAE3555A269D735900A29188 /* STTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STTest.h; sourceTree = "<group>"; };
+		AAE3555B269D735A00A29188 /* STTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = STTest.m; sourceTree = "<group>"; };
+		AAE35580269D9F4900A29188 /* STFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STFile.h; sourceTree = "<group>"; };
+		AAE35581269D9F4900A29188 /* STFile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = STFile.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,8 +78,51 @@
 				AA127044268B09FC00BCB38C /* STSKAdNetworkItems.h */,
 				AA127045268B09FC00BCB38C /* STSKAdNetworkItems.m */,
 				AA12703C268B085700BCB38C /* main.m */,
+				AAE0FCC7269C4FF40068DF99 /* stskadnetwork-Bridging-Header.h */,
+				AAE3555A269D735900A29188 /* STTest.h */,
+				AAE3555B269D735A00A29188 /* STTest.m */,
+				AADD2AF8269F01B2009BE56E /* File */,
+				AADD2AF7269EF472009BE56E /* Define */,
+				AADD2AF6269EF452009BE56E /* Progress */,
+				AAE3554F269D33A400A29188 /* Network */,
 			);
 			path = testTool;
+			sourceTree = "<group>";
+		};
+		AADD2AF6269EF452009BE56E /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				AAE0FCC4269C36A60068DF99 /* STProgressBar.h */,
+				AAE0FCC5269C36A60068DF99 /* STProgressBar.m */,
+			);
+			path = Progress;
+			sourceTree = "<group>";
+		};
+		AADD2AF7269EF472009BE56E /* Define */ = {
+			isa = PBXGroup;
+			children = (
+				AADD2AF5269EEDE1009BE56E /* STColorDefine.h */,
+				AADD2AF9269F0452009BE56E /* STPrintfDefine.h */,
+			);
+			path = Define;
+			sourceTree = "<group>";
+		};
+		AADD2AF8269F01B2009BE56E /* File */ = {
+			isa = PBXGroup;
+			children = (
+				AAE35580269D9F4900A29188 /* STFile.h */,
+				AAE35581269D9F4900A29188 /* STFile.m */,
+			);
+			path = File;
+			sourceTree = "<group>";
+		};
+		AAE3554F269D33A400A29188 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				AAE35550269D33BD00A29188 /* STNetwork.h */,
+				AAE35551269D33BD00A29188 /* STNetwork.m */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -93,10 +151,11 @@
 		AA127031268B085700BCB38C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					AA127038268B085700BCB38C = {
 						CreatedOnToolsVersion = 12.4;
+						LastSwiftMigration = 1250;
 					};
 				};
 			};
@@ -123,7 +182,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAE35582269D9F4900A29188 /* STFile.m in Sources */,
+				AAE35552269D33BD00A29188 /* STNetwork.m in Sources */,
 				AA12703D268B085700BCB38C /* main.m in Sources */,
+				AAE0FCC6269C36A60068DF99 /* STProgressBar.m in Sources */,
+				AAE3555C269D735A00A29188 /* STTest.m in Sources */,
 				AA127046268B09FC00BCB38C /* STSKAdNetworkItems.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -245,18 +308,37 @@
 		AA127041268B085700BCB38C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "testTool/stskadnetwork-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
 		AA127042268B085700BCB38C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "testTool/stskadnetwork-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

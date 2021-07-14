@@ -6,41 +6,160 @@
 //
 
 #import "STSKAdNetworkItems.h"
+#import "STFile.h"
+#import "STPrintfDefine.h"
 
 @implementation STSKAdNetworkItems
+
+void printfDivider(void) {
+    char bar[78]; memset(bar, '-', sizeof(bar)); printf(GREEN"\n%s"NONE,bar);
+}
 
 + (NSArray *)readAdItems:(NSString *)filePath {
     NSArray *adItems = [NSArray arrayWithContentsOfFile:filePath];
     return adItems;
 }
 
++ (void)start {
+    NSMutableArray *adItems = [self downLoadAdItems];
+    NSArray *deDuplicationadItems = [self deDuplication:adItems];
+    [self export:deDuplicationadItems];
+}
+
+#pragma mark - download
+
++ (NSMutableArray *)downLoadAdItems {
+    
+    // 下载
+    printfG("\n\n▶️  开始下载");
+    printfDivider();
+    
+    NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
+    NSMutableArray *adItems = [[NSMutableArray alloc] init];
+    NSMutableDictionary *jsonPathMap = [self createJsonPathMap];
+    
+    for (int i = 0; i < jsonPathMap.allKeys.count; i++) {
+        printf("\n");
+        
+        NSString *key = [[jsonPathMap allKeys] objectAtIndex:i];
+        NSString *value = [jsonPathMap objectForKey:key];
+        
+        printf("Download %s for \"%s\"\n",key.UTF8String, value.UTF8String);
+        NSError *error;
+        NSArray *arr = [STFile download:value name:key path:@"" error:&error];
+        if (!error) {
+            if (arr != nil && arr.count > 0) {
+                printf("Download %s complete\n",key.UTF8String);
+                [adItems addObject:arr];
+            }
+            else {
+                printf(RED"[ERROR] Download %s error: arr is nil\n"NONE,key.UTF8String);
+            }
+        }
+        else {
+            printf(RED"[ERROR] Download %s error: %s\n"NONE,key.UTF8String, error.localizedDescription.UTF8String);
+        }
+        
+        [dic setValue:arr==nil?@[]:arr forKey:key];
+    }
+    
+    printf("\n");
+    int count = 0;
+    for (int i = 0; i<[dic allKeys].count; i++) {
+        NSString *key = [[dic allKeys] objectAtIndex:i];
+        NSArray *value = [dic objectForKey:key];
+        printf("\n%-70s%8i个", key.UTF8String, (int)value.count);
+        count += value.count;
+    }
+    
+    printfDivider();
+    printf(GREEN"\n%-70s%8i个"NONE, "Total download", count);
+    printfG("\n✅ 下载结束\n");
+    
+    return adItems;
+}
+
+#pragma mark - deDuplication
+
++ (NSArray *)deDuplication:(NSArray *)adItems {
+    // 去重
+    printfG("\n\n▶️  开始去重");
+    printfDivider();
+    
+    NSArray *idArray = [[NSArray alloc] init];
+    for (int i = 0; i < adItems.count; i++) {
+        NSArray *arr = [adItems objectAtIndex:i];
+        idArray = [idArray arrayByAddingObjectsFromArray:arr];
+    }
+
+    printf(GREEN"\n%-73s%8i个"NONE, "去重前", (int)idArray.count);
+
+    NSArray *lowercaseIdItems = [idArray valueForKeyPath:@"lowercaseString"];
+    NSArray *deDuplicationIdItems = [lowercaseIdItems valueForKeyPath:@"@distinctUnionOfObjects.self"];
+
+    printf(GREEN"\n%-73s%8i个"NONE, "去重后", (int)deDuplicationIdItems.count);
+
+    printfDivider();
+    printf("\n✅ 去重结束\n");
+    return deDuplicationIdItems;
+}
+
+#pragma mark - export
+
++ (void)export:(NSArray *)idItems {
+    
+    char strpwd[301];
+    memset(strpwd,0,sizeof(strpwd));
+    getcwd(strpwd,300);
+    printf("当前目录是：%s\n",strpwd);
+    
+    NSString *path = [[NSString alloc] initWithCString:strpwd encoding:NSUTF8StringEncoding];
+    
+    // 准备导出 导出路径
+    NSString *exportPath = [path stringByAppendingPathComponent:@"export"];
+    if(![fileManager fileExistsAtPath:exportPath]) {
+        [fileManager createDirectoryAtPath:exportPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+
+    printf("\n\n▶️  开始导出");
+    printf("\n------------------------------------------------------------------------------");
+
+    // 导出plist
+    NSMutableDictionary *infoDic = [[NSMutableDictionary alloc] init];
+    [infoDic setValue:deDuplicationAdItems forKey:@"SKAdNetworkItems"];
+    NSString *infoFilePath = [exportPath stringByAppendingPathComponent:@"Info_copy.plist"];
+    [infoDic writeToURL:[NSURL fileURLWithPath:infoFilePath] atomically:YES];
+
+    printf("\n");
+    printf("%s",[NSString stringWithFormat:@"plist导出目录: %@",infoFilePath].UTF8String);
+
+    // 导出txt
+    NSMutableString *text = [[NSMutableString alloc] init];
+    for (int i = 0; i<deDuplicationIdItems.count; i++) {
+        NSString *adid = [deDuplicationIdItems objectAtIndex:i];
+        [text appendString:@"\""];
+        [text appendString:adid];
+        [text appendString:@"\""];
+        if (i != deDuplicationIdItems.count-1) {
+            [text appendString:@",\n"];
+        }
+    }
+    NSString *txtFilePath = [exportPath stringByAppendingPathComponent:@"SKAdNetworkIdentifier.txt"];
+    NSError *error1;
+    [text writeToURL:[NSURL fileURLWithPath:txtFilePath] atomically:YES encoding:NSUTF8StringEncoding error:&error1];
+    printf("\n\n");
+    printf("%s",[NSString stringWithFormat:@"txt  导出目录: %@",txtFilePath].UTF8String);
+
+    printf("\n------------------------------------------------------------------------------");
+    printf("\n✅ 导出结束\n");
+
+    printf("\n\n*********************************  合并结束  *********************************");
+    
+}
+
 // 转换SKAdNetworkItems 去重
-+ (void)deDuplication:(NSString *)path {
-    
-    NSMutableString *log = [[NSMutableString alloc] init];
-    NSString *s = @"";
-    
-    //**************************************************************************************
-    //*    ____ _____   ____  _  __    _       _ _   _      _ __        __         _       *
-    //*   / ___|_   _| / ___|| |/ /   / \   __| | \ | | ___| |\ \      / /__  _ __| | __   *
-    //*   \___ \ | |   \___ \| ' /   / _ \ / _` |  \| |/ _ \ __\ \ /\ / / _ \| '__| |/ /   *
-    //*    ___) || |    ___) | . \  / ___ \ (_| | |\  |  __/ |_ \ V  V / (_) | |  |   <    *
-    //*   |____/ |_|   |____/|_|\_\/_/   \_\__,_|_| \_|\___|\__| \_/\_/ \___/|_|  |_|\_\   *
-    //*                                                                                    *
-    //**************************************************************************************
-    
-    // 上边的字符画
-    NSString *base64String = @"KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCgogX19fXyBfX19fXyAgIF9fX18gIF8gIF9fICAgIF8gICAgICAgXyBfICAgXyAgICAgIF8gX18gICAgICAgIF9fICAgICAgICAgXyAgICAgCi8gX19ffF8gICBffCAvIF9fX3x8IHwvIC8gICAvIFwgICBfX3wgfCBcIHwgfCBfX198IHxcIFwgICAgICAvIC9fXyAgXyBfX3wgfCBfXyAKXF9fXyBcIHwgfCAgIFxfX18gXHwgJyAvICAgLyBfIFwgLyBfYCB8ICBcfCB8LyBfIFwgX19cIFwgL1wgLyAvIF8gXHwgJ19ffCB8LyAvIAogX19fKSB8fCB8ICAgIF9fXykgfCAuIFwgIC8gX19fIFwgKF98IHwgfFwgIHwgIF9fLyB8XyBcIFYgIFYgLyAoXykgfCB8ICB8ICAgPCAgCnxfX19fLyB8X3wgICB8X19fXy98X3xcX1wvXy8gICBcX1xfXyxffF98IFxffFxfX198XF9ffCBcXy9cXy8gXF9fXy98X3wgIHxffFxfXCAKCgogICAgICAgICAgICAgICAgICAgICAgICAg5bm/5ZGK6IGU55ufU0tBZE5ldHdvcmvlkIjlubblt6XlhbcgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKg==";
-    NSData *base64date = [[NSData alloc] initWithBase64EncodedString:base64String options:NSDataBase64DecodingIgnoreUnknownCharacters];
-    NSString *flowersCode = [[NSString alloc] initWithData:base64date encoding:NSUTF8StringEncoding];
-    [log appendFormat:@"\n\n%@",flowersCode];
-    
-    // 读取
-    s = @"\n\n▶️  开始读取";
-    [log appendFormat:@"%@",s];
-    s = @"\n------------------------------------------------------------------------------";
-    [log appendFormat:@"%@",s];
-    
++ (void)deDuplicationaa:(NSString *)path {
+
     // 获取当前脚本的目录
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
@@ -49,20 +168,13 @@
     NSMutableArray *plistArr = [[NSMutableArray alloc] init];
     NSArray *fileList = [fileManager contentsOfDirectoryAtPath:path error:&error];
     if (error) {
-        s = [NSString stringWithFormat:@"❌ GetFileList Failed.\nPath: %@ \nError: %@ ",path,error];
-        [log appendFormat:@"\n\n%@",s];
-        
-        NSLog(@"%@",log);
+        printf("%s",[NSString stringWithFormat:@"\n\n❌ GetFileList Failed.\nPath: %@ \nError: %@ ",path,error].UTF8String);
         return;
     }
     
     if (fileList.count<=0) {
-        s = @"❌ No File";
-        [log appendFormat:@"\n\n%@",s];
-        
-        s = @"\n\n*********************************  合并结束  *********************************";
-        [log appendFormat:@"%@",s];
-        NSLog(@"%@",log);
+        printf("\n\n❌ No File");
+        printf("\n\n*********************************  合并结束  *********************************");
         return;;
     }
     
@@ -75,12 +187,8 @@
     }
     
     if (plistArr.count<=0) {
-        s = @"❌ No Plist File";
-        [log appendFormat:@"\n\n%@",s];
-        
-        s = @"\n\n*********************************  合并结束  *********************************";
-        [log appendFormat:@"%@",s];
-        NSLog(@"%@",log);
+        printf("\n\n❌ No Plist File");
+        printf("\n\n*********************************  合并结束  *********************************");
         return;;
     }
     
@@ -99,35 +207,27 @@
     NSArray *idItems = [adItems valueForKeyPath:@"SKAdNetworkIdentifier"];
     [itemsStr appendString:@"\n"];
     [itemsStr appendFormat:@"%@ %i个",[self appendBlankspace:@"共计" max:70],(int)idItems.count];
-//    [itemsStr appendString:@"\n"];
-    s = itemsStr;
-    [log appendFormat:@"%@",s];
+    printf("%s",itemsStr.UTF8String);
     
-    s = @"\n------------------------------------------------------------------------------";
-    [log appendFormat:@"%@",s];
-    s = @"\n✅ 读取结束\n";
-    [log appendFormat:@"%@",s];
+    printfG("\n------------------------------------------------------------------------------");
+    printfG("\n✅ 下载结束\n");
     
     
     // 去重
-    s = @"\n\n▶️  开始去重";
-    [log appendFormat:@"%@",s];
-    s = @"\n------------------------------------------------------------------------------";
-    [log appendFormat:@"%@",s];
+    printf("\n\n▶️  开始去重");
+    printf("\n------------------------------------------------------------------------------");
 
-    s = [NSString stringWithFormat:@"\n%@ %i个",[self appendBlankspace:@"去重前" max:69],(int)idItems.count];
-    [log appendFormat:@"%@",s];
+    NSString *s = [NSString stringWithFormat:@"\n%@ %i个",[self appendBlankspace:@"去重前" max:69],(int)idItems.count];
+    printf("%s",s.UTF8String);
     
     NSArray *lowercaseIdItems = [idItems valueForKeyPath:@"lowercaseString"];
     NSArray *deDuplicationIdItems = [lowercaseIdItems valueForKeyPath:@"@distinctUnionOfObjects.self"];
     
     s = [NSString stringWithFormat:@"\n%@ %i个",[self appendBlankspace:@"去重后" max:69],(int)deDuplicationIdItems.count];
-    [log appendFormat:@"%@",s];
+    printf("%s",s.UTF8String);
 
-    s = @"\n------------------------------------------------------------------------------";
-    [log appendFormat:@"%@",s];
-    s = @"\n✅ 去重结束\n";
-    [log appendFormat:@"%@",s];
+    printf("\n------------------------------------------------------------------------------");
+    printf("\n✅ 去重结束\n");
     
     // 去重后SKAdNetworkIdentifier列表
     NSMutableArray *deDuplicationAdItems = [[NSMutableArray alloc] init];
@@ -146,10 +246,8 @@
         [fileManager createDirectoryAtPath:exportPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     
-    s = @"\n\n▶️  开始导出";
-    [log appendFormat:@"%@",s];
-    s = @"\n------------------------------------------------------------------------------";
-    [log appendFormat:@"%@",s];
+    printf("\n\n▶️  开始导出");
+    printf("\n------------------------------------------------------------------------------");
     
     // 导出plist
     NSMutableDictionary *infoDic = [[NSMutableDictionary alloc] init];
@@ -157,9 +255,8 @@
     NSString *infoFilePath = [exportPath stringByAppendingPathComponent:@"Info_copy.plist"];
     [infoDic writeToURL:[NSURL fileURLWithPath:infoFilePath] atomically:YES];
     
-    [log appendFormat:@"%@",@"\n"];
-    s = [NSString stringWithFormat:@"plist导出目录: %@",infoFilePath];
-    [log appendFormat:@"%@",s];
+    printf("\n");
+    printf("%s",[NSString stringWithFormat:@"plist导出目录: %@",infoFilePath].UTF8String);
     
     // 导出txt
     NSMutableString *text = [[NSMutableString alloc] init];
@@ -175,19 +272,13 @@
     NSString *txtFilePath = [exportPath stringByAppendingPathComponent:@"SKAdNetworkIdentifier.txt"];
     NSError *error1;
     [text writeToURL:[NSURL fileURLWithPath:txtFilePath] atomically:YES encoding:NSUTF8StringEncoding error:&error1];
-    [log appendFormat:@"%@",@"\n\n"];
-    s = [NSString stringWithFormat:@"txt  导出目录: %@",txtFilePath];
-    [log appendFormat:@"%@",s];
+    printf("\n\n");
+    printf("%s",[NSString stringWithFormat:@"txt  导出目录: %@",txtFilePath].UTF8String);
     
-    s = @"\n------------------------------------------------------------------------------";
-    [log appendFormat:@"%@",s];
-    s = @"\n✅ 导出结束\n";
-    [log appendFormat:@"%@",s];
+    printf("\n------------------------------------------------------------------------------");
+    printf("\n✅ 导出结束\n");
     
-    s = @"\n\n*********************************  合并结束  *********************************";
-    [log appendFormat:@"%@",s];
-    
-    NSLog(@"%@",log);
+    printf("\n\n*********************************  合并结束  *********************************");
 }
 
 + (NSString *)appendBlankspace:(NSString *)str max:(NSUInteger)max{
@@ -200,6 +291,32 @@
     }
     return str;
 }
+
++ (void)task {
+    NSTask *task;
+    [task setLaunchPath:nil];
+}
+
+
+// 创建xml map
++ (NSMutableDictionary *)createJsonPathMap {
+    NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
+    [dic setValue:@"" forKey:@"facebook"];  //
+    [dic setValue:@"" forKey:@"admob"]; //
+    [dic setValue:@"https://skan.mz.unity3d.com/v3/partner/skadnetworks.plist.json" forKey:@"unity"];   //
+    [dic setValue:@"https://vungle.com/skadnetworkids.json" forKey:@"vungle"];  //
+    [dic setValue:@"" forKey:@"ironsource"];    //
+    [dic setValue:@"" forKey:@"applovin"];  //
+    [dic setValue:@"https://a3.chartboost.com/skadnetworkids.json" forKey:@"chartboost"];   //
+    [dic setValue:@"https://raw.githubusercontent.com/AdColony/AdColony-iOS-SDK/master/skadnetworkids.json" forKey:@"adcolony"];    //
+    [dic setValue:@"https://www.inmobi.com/skadnetworkids.json" forKey:@"inmobi"];  //
+    [dic setValue:@"" forKey:@"pangle"];  //
+    [dic setValue:@"https://raw.githubusercontent.com/mopub/mopub-skadnetwork-ids/main/partners/mopub_marketplace.json" forKey:@"mopub"];  //
+    [dic setValue:@"https://dev.mintegral.com/skadnetworkids.json" forKey:@"mintegral"];    //
+    
+    return dic;
+}
+
 
 @end
 

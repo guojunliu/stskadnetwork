@@ -11,7 +11,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface STSKAdNetworkItems : NSObject
 
-+ (void)deDuplication:(NSString *)path;
++ (void)start;
+
+//+ (void)deDuplication:(NSString *)path;
 
 @end
 

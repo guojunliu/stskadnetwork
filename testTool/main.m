@@ -7,9 +7,16 @@
 
 #import <Foundation/Foundation.h>
 #import "STSKAdNetworkItems.h"
+#import "STProgressBar.h"
+#import "STNetwork.h"
+#import "STTest.h"
+#import "STPrintfDefine.h"
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
+        
+        printfFlower;
+        
         NSString *path;
         NSMutableArray *arr = [[NSMutableArray alloc] init];
         for (int i = 0; i<argc; i++) {
@@ -18,10 +25,10 @@ int main(int argc, const char * argv[]) {
             if (i == 0) {
                 path = s;
                 path = [path stringByDeletingLastPathComponent];
-                NSLog(@"Path : %@",s);
+//                NSLog(@"Path : %@",s);
             }
             else {
-                NSLog(@"argv[%i] : %@",i,s);
+//                NSLog(@"argv[%i] : %@",i,s);
             }
             [arr addObject:s];
         }
@@ -34,9 +41,13 @@ int main(int argc, const char * argv[]) {
                     path = p;
                 }
             }
-        }
+        };
         
-        [STSKAdNetworkItems deDuplication:path];
+
+        [STSKAdNetworkItems start];
     }
+    
+    // 挂起
+    dispatch_main();
     return 0;
 }
