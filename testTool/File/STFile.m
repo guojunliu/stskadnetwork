@@ -7,6 +7,7 @@
 
 #import "STFile.h"
 #import "STProgressBar.h"
+#import "STPrintfDefine.h"
 
 @implementation STFile
 
@@ -43,6 +44,32 @@
     
     NSArray *idItems = [array valueForKeyPath:@"skadnetwork_id"];
     return idItems;
+}
+
++ (NSDictionary *)getJsonPathDic {
+    NSString *sourcePath = @"https://raw.githubusercontent.com/guojunliu/stskadnetwork/master/json/source.json";
+    NSError *error;
+    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:sourcePath] options:NSDataReadingUncached error:&error];
+    if (error) {
+        printf(RED"[ERROR] source error: %s\n"NONE, error.localizedDescription.UTF8String);
+        return nil;
+    }
+    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    if (error) {
+        printf(RED"[ERROR] source error: %s\n"NONE, error.localizedDescription.UTF8String);
+        return nil;
+    }
+    
+    NSDictionary *sourceDic;
+    if ([[dic allKeys] containsObject:@"source"]) {
+        sourceDic = [dic objectForKey:@"source"];
+    }
+    
+    if (sourceDic == nil) {
+        printf(RED"[ERROR] source json is nil\n"NONE);
+    }
+    
+    return sourceDic;
 }
 
 @end

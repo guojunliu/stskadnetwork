@@ -27,7 +27,7 @@
 #define printfC(s) printf(CYAN"%s"NONE,s)
 #define printfP(s) printf(PURPLE"%s"NONE,s)
 #define printfY(s) printf(YELLOW"%s"NONE,s)
-#define printfFlower printf(LIGHT_GREEN"\n\n%s"NONE,flowersCode)
+#define printfFlower printf(LIGHT_GREEN"\n%s"NONE,flowersCode)
 
 void printfDivider(void);
 

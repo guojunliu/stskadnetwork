@@ -1,14 +1,17 @@
 {
-  "ironsource": "",
-  "unity": "https:\/\/skan.mz.unity3d.com\/v3\/partner\/skadnetworks.plist.json",
-  "applovin": "",
-  "inmobi": "https:\/\/www.inmobi.com\/skadnetworkids.json",
-  "pangle": "",
-  "vungle": "https:\/\/vungle.com\/skadnetworkids.json",
-  "mintegral": "https:\/\/dev.mintegral.com\/skadnetworkids.json",
-  "chartboost": "https:\/\/a3.chartboost.com\/skadnetworkids.json",
-  "admob": "",
-  "facebook": "",
-  "mopub": "https:\/\/raw.githubusercontent.com\/mopub\/mopub-skadnetwork-ids\/main\/partners\/mopub_marketplace.json",
-  "adcolony": "https:\/\/raw.githubusercontent.com\/AdColony\/AdColony-iOS-SDK\/master\/skadnetworkids.json"
+  "update_date": "2021-07-15",
+  "source": {
+    "ironsource": "",
+    "unity": "https:\/\/skan.mz.unity3d.com\/v3\/partner\/skadnetworks.plist.json",
+    "applovin": "",
+    "inmobi": "https:\/\/www.inmobi.com\/skadnetworkids.json",
+    "pangle": "",
+    "vungle": "https:\/\/vungle.com\/skadnetworkids.json",
+    "mintegral": "https:\/\/dev.mintegral.com\/skadnetworkids.json",
+    "chartboost": "https:\/\/a3.chartboost.com\/skadnetworkids.json",
+    "admob": "",
+    "facebook": "",
+    "mopub": "https:\/\/raw.githubusercontent.com\/mopub\/mopub-skadnetwork-ids\/main\/partners\/mopub_marketplace.json",
+    "adcolony": "https:\/\/raw.githubusercontent.com\/AdColony\/AdColony-iOS-SDK\/master\/skadnetworkids.json"
+  }
 }

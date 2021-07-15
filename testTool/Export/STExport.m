@@ -122,8 +122,8 @@ NSString *idKey = @"SKAdNetworkIdentifier";
     [infoDic writeToURL:[NSURL fileURLWithPath:infoFilePath] atomically:YES];
     
     
-    printfDivider();
     printf(GREEN"\nPlist导出路径为 %s"NONE, infoFilePath.UTF8String);
+    printfDivider();
     printfG("\n✅ 导出结束\n");
 }
 
@@ -159,8 +159,8 @@ NSString *idKey = @"SKAdNetworkIdentifier";
     NSError *error;
     [text writeToURL:[NSURL fileURLWithPath:txtFilePath] atomically:YES encoding:NSUTF8StringEncoding error:&error];
     
-    printfDivider();
     printf(GREEN"\nPlist导出路径为 %s"NONE, txtFilePath.UTF8String);
+    printfDivider();
     printfG("\n✅ 导出结束\n");
 }
 

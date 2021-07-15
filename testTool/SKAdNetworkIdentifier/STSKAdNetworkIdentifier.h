@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface STSKAdNetworkIdentifier : NSObject
 
-+ (NSMutableArray *)downLoadAdItems;
++ (NSMutableArray *)downLoadAdItems:(NSDictionary *)sourceDic;
 
 + (NSArray *)deDuplication:(NSArray *)adItems;
 
