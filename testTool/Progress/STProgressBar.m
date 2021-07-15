@@ -44,11 +44,11 @@
 #pragma mark - 模拟
 
 + (void)start {
-    [STProgressBar update:5];
+    [STProgressBar update:0];
 }
 
 + (void)completion {
-    for (int i = 5; i <= 100; i++) {
+    for (int i = 0; i <= 100; i++) {
         [STProgressBar update:i];
         usleep(5000); //每0.1s刷新进度条
     }
