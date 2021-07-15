@@ -34,7 +34,8 @@
         NSArray *arr = [STFile download:value name:key path:@"" error:&error];
         if (!error) {
             if (arr != nil && arr.count > 0) {
-                printf("✅[SUCCE] Download [%s] complete\n",key.UTF8String);
+                NSString *s = [NSString stringWithFormat:@"✅[SUCCE] Download [%@]",key];
+                printf("%-70s complete\n",s.UTF8String);
                 [adItems addObject:arr];
             }
             else {
@@ -53,18 +54,18 @@
     for (int i = 0; i<[dic allKeys].count; i++) {
         NSString *key = [[dic allKeys] objectAtIndex:i];
         NSArray *value = [dic objectForKey:key];
-        if (count == 0) {
-            printf("\n⚠️%-70s%8i个", key.UTF8String, (int)value.count);
+        if (value.count == 0) {
+            printf("\n❗️ %-65s%8i个", key.UTF8String, (int)value.count);
         }
         else {
-            printf("\n✅%-70s%8i个", key.UTF8String, (int)value.count);
+            printf("\n✅ %-65s%8i个", key.UTF8String, (int)value.count);
         }
         
         count += value.count;
     }
     
     printfDivider();
-    printf(GREEN"\n%-70s%8i个"NONE, "Total download", count);
+    printf(GREEN"\n🈴 %-65s%8i个"NONE, "Total download", count);
     printfG("\n✅ 下载结束\n");
     
     return adItems;
@@ -83,12 +84,12 @@
         idArray = [idArray arrayByAddingObjectsFromArray:arr];
     }
 
-    printf("\n%-73s%8i个", "去重前", (int)idArray.count);
+    printf("\n%-70s%8i个", "去重前", (int)idArray.count);
 
     NSArray *lowercaseIdItems = [idArray valueForKeyPath:@"lowercaseString"];
     NSArray *deDuplicationIdItems = [lowercaseIdItems valueForKeyPath:@"@distinctUnionOfObjects.self"];
 
-    printf("\n%-73s%8i个", "去重后", (int)deDuplicationIdItems.count);
+    printf("\n%-70s%8i个", "去重后", (int)deDuplicationIdItems.count);
 
     printfDivider();
     printfG("\n✅ 去重结束\n");

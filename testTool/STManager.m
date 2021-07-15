@@ -9,10 +9,19 @@
 #import "STSKAdNetworkIdentifier.h"
 #import "STExport.h"
 #import "STFile.h"
+#import "STPrintfDefine.h"
 
 @implementation STManager
 
 + (void)exportToInfoPlist {
+    
+    // 准备导出 导出路径
+    if (![STExport haveInfoPlist]) {
+        NSString *infoPlistPath = [STExport getCurrentPlistPath];
+        printf(LIGHT_RED"\n[ERROR] %s 不存在\n"NONE,infoPlistPath.UTF8String);
+        return;
+    }
+    
     NSDictionary *sourceJson = [STFile getJsonPathDic];
     NSMutableArray *adItems = [STSKAdNetworkIdentifier downLoadAdItems:sourceJson];
     NSArray *deDuplicationadItems = [STSKAdNetworkIdentifier deDuplication:adItems];

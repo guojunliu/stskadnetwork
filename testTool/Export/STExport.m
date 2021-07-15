@@ -18,7 +18,6 @@ NSString *idKey = @"SKAdNetworkIdentifier";
     memset(strpwd,0,sizeof(strpwd));
     getcwd(strpwd,300);
     NSString *path = [[NSString alloc] initWithCString:strpwd encoding:NSUTF8StringEncoding];
-    printf("\n当前目录是：%s\n",path.UTF8String);
     return path;
 }
 
@@ -33,18 +32,23 @@ NSString *idKey = @"SKAdNetworkIdentifier";
     return YES;
 }
 
++ (NSString *)getCurrentPlistPath {
+    // 准备导出 导出路径
+    NSString *workPath = [self currentPath];
+    NSString *infoPlistPath = [NSString stringWithFormat:@"%@/Info.plist",workPath];
+    return infoPlistPath;
+}
+
 + (void)exportToInfoPlist:(NSArray *)idItems {
     
     // 导出
     printfG("\n\n▶️  开始导出");
     printfDivider();
     
-    
-    // 准备导出 导出路径
-    NSString *workPath = [self currentPath];
-    NSString *infoPlistPath = [NSString stringWithFormat:@"%@/Info.plist",workPath];
+    NSString *infoPlistPath = [self getCurrentPlistPath];
     if (![self haveInfoPlist]) {
-        printf(RED"[ERROR] %s 不存在\n"NONE,infoPlistPath.UTF8String);
+        printf(RED"\n[ERROR] %s 不存在\n"NONE,infoPlistPath.UTF8String);
+        return;
     }
     
     NSURL *infoPlistPathUrl = [NSURL fileURLWithPath:infoPlistPath];
@@ -101,7 +105,7 @@ NSString *idKey = @"SKAdNetworkIdentifier";
     
     BOOL havePath = [[NSFileManager defaultManager] fileExistsAtPath:path];
     if (!havePath) {
-        printf(RED"[ERROR] %s 不存在\n"NONE,path.UTF8String);
+        printf(RED"\n[ERROR] %s 不存在\n"NONE,path.UTF8String);
         return;
     }
     

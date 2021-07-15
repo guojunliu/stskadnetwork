@@ -26,7 +26,7 @@
     }
     
     // 输出当前进度
-    printf("[%-50s]  [%d%%][%c]\r", bar, percent, ProgressBarUnderway(percent));
+    printf("[%-50s] %16s [%d%%][%c]\r", bar, "", percent, ProgressBarUnderway(percent));
     fflush(stdout); //刷新缓冲区
 
     // 如果进度已经达到100% 则停止

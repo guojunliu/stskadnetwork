@@ -13,7 +13,7 @@
 int main(int argc, const char * argv[])
 {
     @autoreleasepool {
-        NSString *version = @"1.0.2";
+        NSString *version = @"2.0.0";
         BOOL haveVersion = NO;
 
         BRLOptionParser *options = [BRLOptionParser new];

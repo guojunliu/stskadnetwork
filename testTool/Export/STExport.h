@@ -11,6 +11,8 @@
 
 + (BOOL)haveInfoPlist;
 
++ (NSString *)getCurrentPlistPath;
+
 + (void)exportToInfoPlist:(NSArray *)idItems;
 
 + (void)exportToNewPlist:(NSArray *)idItems path:(NSString *)path;
